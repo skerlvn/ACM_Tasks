@@ -96,8 +96,78 @@ namespace Lab2
             zedGraphControl.AxisChange();
             zedGraphControl.Invalidate();
         }
-    }
 
+        private void CalculateErrorsButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var pane = zedGraphControl.GraphPane;
+                pane.CurveList.Clear();
+                pane.Title.Text = "График ошибок кубического сплайна";
+                pane.XAxis.Title.Text = "x";
+                pane.YAxis.Title.Text = "Ошибка";
+
+                // Массивы для значений функции и сплайна
+                List<PointPair> functionPoints = new List<PointPair>();
+                List<PointPair> splinePoints = new List<PointPair>();
+
+                // Вычисляем значения функции на интервале [-1, 1] с шагом 0.01
+                for (double x = -1; x <= 1; x += 0.01)
+                {
+                    functionPoints.Add(new PointPair(x, EvaluateFunction(x)));
+                }
+
+                int n = int.Parse(txtN.Text);
+                // Определение узлов для построения кубического сплайна
+                double[] xNodes = new double[n];
+                double[] yNodes = new double[n];
+                for (int i = 0; i < n; i++)
+                {
+                    xNodes[i] = -1 + i * (2.0 / (n - 1));  // Равномерное разбиение отрезка
+                    yNodes[i] = EvaluateFunction(xNodes[i]);
+                }
+
+                // Построение и вычисление значений кубического сплайна
+                var spline = new CubicSpline(xNodes, yNodes);
+                for (double x = -1; x <= 1; x += 0.01)
+                {
+                    splinePoints.Add(new PointPair(x, spline.Evaluate(x)));
+                }
+                // Вычисление ошибок
+                double[] errors = new double[functionPoints.Count];
+
+                for (int i = 0; i < functionPoints.Count; i++)
+                {
+                    errors[i] = Math.Abs(functionPoints[i].Y - splinePoints[i].Y);
+                }
+                // Вывод ошибок
+                double maxError = errors.Max();
+                double minError = errors.Min();
+                double avgError = errors.Average();
+
+
+                MessageBox.Show($"Ошибки кубического сплайна:\n" +
+                                $"Максимальная ошибка: {maxError}\n" +
+                                $"Минимальная ошибка: {minError}\n" +
+                                $"Средняя ошибка: {avgError}\n\n");
+
+                LineItem splineCurve = pane.AddCurve("Ошибки кубического сплайна",
+                    functionPoints.Select(x => x.X).ToArray(),
+                    errors,
+                    Color.Red, SymbolType.None);
+                splineCurve.Line.Style = DashStyle.Dash;
+
+                // Обновление графика
+                zedGraphControl.AxisChange();
+                zedGraphControl.Invalidate();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка: " + ex.Message);
+            }
+        }
+    }
+    //TODO: Ошибки
     // Класс для создания и оценки кубического сплайна
     public class CubicSpline
     {

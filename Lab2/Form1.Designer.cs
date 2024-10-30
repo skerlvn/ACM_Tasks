@@ -24,6 +24,7 @@
             this.lblFunction = new System.Windows.Forms.Label();
             this.lblN = new System.Windows.Forms.Label();
             this.zedGraphControl = new ZedGraph.ZedGraphControl();
+            this.CalculateErrorsButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtFunction
@@ -84,9 +85,20 @@
             this.zedGraphControl.TabIndex = 5;
             this.zedGraphControl.UseExtendedPrintDialog = true;
             // 
+            // CalculateErrorsButton
+            // 
+            this.CalculateErrorsButton.Location = new System.Drawing.Point(12, 159);
+            this.CalculateErrorsButton.Name = "CalculateErrorsButton";
+            this.CalculateErrorsButton.Size = new System.Drawing.Size(231, 32);
+            this.CalculateErrorsButton.TabIndex = 6;
+            this.CalculateErrorsButton.Text = "Рассчитать ошибки";
+            this.CalculateErrorsButton.UseVisualStyleBackColor = true;
+            this.CalculateErrorsButton.Click += new System.EventHandler(this.CalculateErrorsButton_Click);
+            // 
             // Form1
             // 
             this.ClientSize = new System.Drawing.Size(850, 450);
+            this.Controls.Add(this.CalculateErrorsButton);
             this.Controls.Add(this.zedGraphControl);
             this.Controls.Add(this.txtFunction);
             this.Controls.Add(this.txtN);
@@ -101,5 +113,6 @@
         }
 
         private ZedGraph.ZedGraphControl zedGraphControl;
+        private System.Windows.Forms.Button CalculateErrorsButton;
     }
 }
